@@ -8,14 +8,15 @@ import {
 
 export type findItemInDatabaseProps = {
   apiKey: string;
+  databaseId: string;
   inventoryId: string;
   startCursor?: string;
 }
 
-export const findItemInDatabase = async ({ apiKey, inventoryId, startCursor }: findItemInDatabaseProps) => {
+export const findItemInDatabase = async ({ apiKey, databaseId, inventoryId, startCursor }: findItemInDatabaseProps) => {
   const notion = new Client({ auth: apiKey })
   const databaseResponse = await notion.databases.query({
-    database_id: '314d6424bee1489a9f09a9b86a86ba1e',
+    database_id: databaseId,
     start_cursor: startCursor,
     filter: {
       and: [
@@ -102,14 +103,15 @@ const processItem = (it: PageObjectResponse | PartialPageObjectResponse | Partia
 
 export type listItemsInDatabaseProps = {
   apiKey: string;
+  databaseId: string;
   startCursor?: string;
   query?: string;
 }
 
-export const listItemsInDatabase = async ({ apiKey, startCursor, query }: listItemsInDatabaseProps) => {
+export const listItemsInDatabase = async ({ apiKey, databaseId, startCursor, query }: listItemsInDatabaseProps) => {
   const notion = new Client({ auth: apiKey })
   const databaseResponse = await notion.databases.query({
-    database_id: '314d6424bee1489a9f09a9b86a86ba1e',
+    database_id: databaseId,
     start_cursor: startCursor,
     filter: {
       and: query?.toUpperCase()?.startsWith('XDEV-') ? [{

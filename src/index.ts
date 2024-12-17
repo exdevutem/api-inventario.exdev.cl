@@ -7,6 +7,7 @@ import { cors } from 'hono/cors'
 type Bindings = {
   NOTION_API_KEY: string;
   FRONTEND_URL: string;
+  NOTION_DATABASE_ID: string;
 }
 const app = new Hono<{ Bindings: Bindings }>()
 const memoryStore = new MemoryStore()
@@ -43,11 +44,12 @@ app.get('/', async (c) => {
 
 app.get('/items', async c => {
   try {
-    const { NOTION_API_KEY } = c.env
+    const { NOTION_DATABASE_ID, NOTION_API_KEY } = c.env
     const startCursor = c.req.query('startCursor')
     const query = c.req.query('query')
     const items = await listItemsInDatabase({
       apiKey: NOTION_API_KEY,
+      databaseId: NOTION_DATABASE_ID,
       startCursor,
       query
     })
@@ -63,9 +65,10 @@ app.get('/items', async c => {
 app.get('/items/:id', async c => {
   const inventoryId = c.req.param('id')
   const startCursor = c.req.query('startCursor')
-  const { NOTION_API_KEY } = c.env
+  const { NOTION_DATABASE_ID, NOTION_API_KEY } = c.env
   const item = await findItemInDatabase({
     apiKey: NOTION_API_KEY,
+    databaseId: NOTION_DATABASE_ID,
     inventoryId,
     startCursor,
   })
